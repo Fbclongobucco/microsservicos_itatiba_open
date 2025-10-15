@@ -36,6 +36,14 @@ public class MatchService {
         var tournament = tournamentRepository.findById(matchRequestDto.tournamentId())
                 .orElseThrow(() -> new RuntimeException("Tournament not found"));
 
+        var maxMatches = getMaxMatchesForRound(matchRequestDto.round());
+        
+        var count = matchRepository.countByRoundAndTournamentId(matchRequestDto.round(), matchRequestDto.tournamentId());
+
+        if(count >= maxMatches){
+            throw new RuntimeException("Max matches reached for round " + matchRequestDto.round());
+        }
+
         var match = MatchRequestDto.toEntity(matchRequestDto);
         match.setPlayer1(playerOne);
         match.setPlayer2(playerTwo);
@@ -108,4 +116,14 @@ public class MatchService {
                 .toList();
     }
 
+    private int getMaxMatchesForRound(int round) {
+        return switch (round) {
+            case 1 -> 16;
+            case 2 -> 8;
+            case 3 -> 4;
+            case 4 -> 2;
+            case 5 -> 1;
+            default -> throw new IllegalArgumentException("invalid round: " + round);
+        };
+    }
 }

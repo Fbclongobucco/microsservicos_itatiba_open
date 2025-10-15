@@ -46,8 +46,7 @@ public class PlayerService {
 
     public PlayerResponseDto getPlayerById(UUID id) {
         var player = playerRepository.findById(id)
-                .orElse(new Player(null, "", 0, "",
-                        "", "", LocalDate.now(), 0, 0.0) );
+                .orElseThrow(() -> new RuntimeException("Player not found"));
 
         return PlayerResponseDto.fromEntity(player);
     }
