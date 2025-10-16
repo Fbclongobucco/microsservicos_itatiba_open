@@ -1,14 +1,10 @@
 spring:
     application:
       name: tournament-itatiba-open-app
-    eureka:
-      client:
-        service-url:
-          defaultZone: http://localhost:8761/eureka/
     datasource:
-      url: jdbc:postgresql://localhost:5432/tournament_itatiba_open_db
-      username: postgres
-      password: 91710956
+      url: jdbc:postgresql://${DB_HOST:localhost}:${DB_POST:5432}/${DB_NAME:tournament_itatiba_open_db}
+      username: ${DB_USERNAME:postgres}
+      password: ${DB_PASSWORD:postgres}
       driver-class-name: org.postgresql.Driver
       hikari:
         maximum-pool-size: 10
@@ -26,5 +22,10 @@ spring:
           format_sql: true
           use_sql_comments: true
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${NAMING_SERVER_HOST:localhost}:${NAMING_SERVER_PORT:8761}/eureka/
+
 server:
-  port: 8081
+  port: ${PORT:8081}

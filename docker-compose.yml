@@ -1,0 +1,81 @@
+services:
+  naming-server:
+    image: fblongobucco/naming-server:1.0
+    container_name: naming-server
+    ports:
+      - "8888:8677"
+    environment:
+      - SERVER_PORT=8677
+    networks:
+      - atp-network
+
+  api-gateway:
+    image: fblongobucco/api-gateway:1.0
+    container_name: api-gateway
+    ports:
+      - "8000:8561"
+    environment:
+      - SERVER_PORT=8561
+      - NAMING_SERVER_HOST=naming-server
+      - PORT_NAMING_SERVER=8677
+    depends_on:
+      - naming-server
+    networks:
+      - atp-network
+
+  postgres-db:
+    image: postgres:17
+    container_name: postgres-db
+    restart: always
+    environment:
+      - POSTGRES_DB=atp_players_db
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - atp-network
+
+  atp-players-app:
+    image: fblongobucco/atp-players:1.0
+    container_name: atp-players
+    ports:
+      - "9000:8181"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=atp_players_db
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - NAMING_SERVER_HOST=naming-server
+      - NAMING_SERVER_PORT=8677
+    depends_on:
+      - postgres-db
+      - naming-server
+    networks:
+      - atp-network
+
+  tournament-itatiba-open-app:
+    image: fblongobucco/tournament-itatiba-open:1.0
+    container_name: tournament-itatiba-open-app
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=tournament_itatiba_open_db
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - NAMING_SERVER_HOST=naming-server
+      - NAMING_SERVER_PORT=8677
+    depends_on:
+      - postgres-db
+      - naming-server
+    networks:
+      - atp-network
+
+networks:
+  atp-network:
+    driver: bridge
+
+
