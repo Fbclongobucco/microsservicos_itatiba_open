@@ -3,9 +3,9 @@ services:
     image: fblongobucco/naming-server:1.0
     container_name: naming-server
     ports:
-      - "8888:8677"
+      - "8888:${NAMING_SERVER_PORT}"
     environment:
-      - SERVER_PORT=8677
+      - SERVER_PORT=${NAMING_SERVER_PORT}
     networks:
       - atp-network
 
@@ -17,59 +17,80 @@ services:
     environment:
       - SERVER_PORT=8561
       - NAMING_SERVER_HOST=naming-server
-      - PORT_NAMING_SERVER=8677
+      - PORT_NAMING_SERVER=${NAMING_SERVER_PORT}
     depends_on:
       - naming-server
     networks:
       - atp-network
 
-  postgres-db:
+ 
+  postgres-atp-players-db:
     image: postgres:17
-    container_name: postgres-db
+    container_name: postgres-atp-players-db
     restart: always
     environment:
-      - POSTGRES_DB=atp_players_db
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${ATP_DB_NAME}
+      - POSTGRES_USER=${ATP_DB_USER}
+      - POSTGRES_PASSWORD=${ATP_DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5435:5432"
+    volumes:
+      - atp_players_data:/var/lib/postgresql/data
     networks:
       - atp-network
 
-  atp-players-app:
+  
+  atp-players-service:
     image: fblongobucco/atp-players:1.0
-    container_name: atp-players
+    container_name: atp-players-service
     ports:
       - "9000:8181"
     environment:
-      - DB_HOST=postgres-db
+      - DB_HOST=postgres-atp-players-db
       - DB_PORT=5432
-      - DB_NAME=atp_players_db
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${ATP_DB_NAME}
+      - DB_USERNAME=${ATP_DB_USER}
+      - DB_PASSWORD=${ATP_DB_PASSWORD}
       - NAMING_SERVER_HOST=naming-server
-      - NAMING_SERVER_PORT=8677
+      - NAMING_SERVER_PORT=${NAMING_SERVER_PORT}
     depends_on:
-      - postgres-db
+      - postgres-atp-players-db
       - naming-server
     networks:
       - atp-network
 
-  tournament-itatiba-open-app:
+  
+  postgres-tournament-itatiba-db:
+    image: postgres:17
+    container_name: postgres-tournament-itatiba-db
+    restart: always
+    environment:
+      - POSTGRES_DB=${TOURNAMENT_DB_NAME}
+      - POSTGRES_USER=${TOURNAMENT_DB_USER}
+      - POSTGRES_PASSWORD=${TOURNAMENT_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - tournament_itatiba_data:/var/lib/postgresql/data
+    networks:
+      - atp-network
+
+  
+  tournament-itatiba-open-service:
     image: fblongobucco/tournament-itatiba-open:1.0
-    container_name: tournament-itatiba-open-app
+    container_name: tournament-itatiba-open-service
     ports:
       - "8081:8081"
     environment:
-      - DB_HOST=postgres-db
+      - DB_HOST=postgres-tournament-itatiba-db
       - DB_PORT=5432
-      - DB_NAME=tournament_itatiba_open_db
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${TOURNAMENT_DB_NAME}
+      - DB_USERNAME=${TOURNAMENT_DB_USER}
+      - DB_PASSWORD=${TOURNAMENT_DB_PASSWORD}
       - NAMING_SERVER_HOST=naming-server
-      - NAMING_SERVER_PORT=8677
+      - NAMING_SERVER_PORT=${NAMING_SERVER_PORT}
     depends_on:
-      - postgres-db
+      - postgres-tournament-itatiba-db
       - naming-server
     networks:
       - atp-network
@@ -77,5 +98,9 @@ services:
 networks:
   atp-network:
     driver: bridge
+
+volumes:
+  atp_players_data:
+  tournament_itatiba_data:
 
 
