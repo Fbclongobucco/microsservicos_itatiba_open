@@ -28,4 +28,4 @@ eureka:
       service-url:
         defaultZone: http://${NAMING_SERVER_HOST}:${NAMING_SERVER_PORT:8761}/eureka/
 server:
-port: ${SERVER_PORT:8181}
+    port: ${SERVER_PORT:8181}
