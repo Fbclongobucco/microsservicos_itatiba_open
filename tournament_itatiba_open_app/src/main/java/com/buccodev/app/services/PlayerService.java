@@ -30,6 +30,11 @@ public class PlayerService {
         if(playerDto == null){
             throw new RuntimeException("Player not found");
         }
+
+        if(repository.existsById(id)){
+            throw new RuntimeException("Player already exists");
+        }
+
         var player = PlayerResponseDto.toEntity(playerDto);
         repository.save(player);
     }
