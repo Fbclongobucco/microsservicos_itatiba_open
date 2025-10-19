@@ -116,6 +116,13 @@ public class MatchService {
                 .toList();
     }
 
+    public List<MatchResponseDto> getMatchesByTournament(Long tournamentId){
+        var matches = matchRepository.findByTournamentId(tournamentId);
+        return matches.stream()
+                .map(MatchResponseDto::fromEntity)
+                .toList();
+    }
+
     private int getMaxMatchesForRound(int round) {
         return switch (round) {
             case 1 -> 16;

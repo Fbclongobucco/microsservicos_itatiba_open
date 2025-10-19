@@ -15,6 +15,8 @@ public class Player {
     private String name;
     @Column(unique = true, nullable = false)
     private Integer ranking;
+    @ManyToOne
+    private Tournament tournament;
 
     private Boolean isSeed;
 
@@ -58,6 +60,14 @@ public class Player {
 
     public void setSeed(Boolean seed) {
         isSeed = seed;
+    }
+
+    public Tournament getTournament() {
+        return tournament;
+    }
+
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
     }
 
     @Override

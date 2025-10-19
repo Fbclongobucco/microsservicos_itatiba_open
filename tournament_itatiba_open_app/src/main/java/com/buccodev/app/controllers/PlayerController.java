@@ -1,5 +1,6 @@
 package com.buccodev.app.controllers;
 
+import com.buccodev.app.dtos.player.ListUuidsDto;
 import com.buccodev.app.dtos.player.PlayerResponseDto;
 import com.buccodev.app.services.PlayerService;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,15 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
-    @PostMapping("/add/{id}")
-    public ResponseEntity<Void> addPlayer(@PathVariable UUID id){
-        playerService.addPlayer(id);
+    @PostMapping("/add/player/{playerId}/tournament/{tournamentId}")
+    public ResponseEntity<Void> addPlayer(@PathVariable UUID playerId, @PathVariable Long tournamentId){
+        playerService.addPlayer(playerId, tournamentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add/many/tournament/{tournamentId}")
+    public ResponseEntity<Void> addManyPlayers( @PathVariable Long tournamentId, @RequestBody List<UUID> playersIds){
+        playerService.addManyPlayers(playersIds, tournamentId);
         return ResponseEntity.ok().build();
     }
 

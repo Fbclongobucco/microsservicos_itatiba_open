@@ -26,6 +26,9 @@ public class Tournament {
     private String location;
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Player> players = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches = new ArrayList<>();
 
     public Tournament(){
@@ -84,6 +87,10 @@ public class Tournament {
 
     public List<Match> getMatches() {
         return matches;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     @Override
