@@ -5,7 +5,7 @@ import com.buccodev.app.entities.Player;
 import java.util.UUID;
 
 public record PlayerResponseDto(UUID id, String name, Integer ranking, String country, String forehand, String backhand,
-                                String birthDate, Integer height, Double weight) {
+                                String birthDate, Integer height, Double weight, String urlPhoto) {
 
     public static PlayerResponseDto fromEntity(Player entity) {
         return new PlayerResponseDto(
@@ -17,7 +17,8 @@ public record PlayerResponseDto(UUID id, String name, Integer ranking, String co
                 entity.getBackhand(),
                 entity.getBirthDate().toString(),
                 entity.getHeight(),
-                entity.getWeight()
+                entity.getWeight(),
+                entity.getUrlPhoto()
         );
     }
 }

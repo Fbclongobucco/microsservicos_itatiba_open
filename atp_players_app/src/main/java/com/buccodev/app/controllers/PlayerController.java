@@ -13,6 +13,7 @@ import static java.lang.IO.println;
 
 @RestController
 @RequestMapping("/players")
+@CrossOrigin(origins = "*")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -51,5 +52,11 @@ public class PlayerController {
     @GetMapping("/search")
     public ResponseEntity<List<PlayerResponseDto>> getPlayerByName(@RequestParam String name){
         return ResponseEntity.ok(playerService.getPlayerByName(name));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<PlayerResponseDto>> getAllPlayers(@RequestParam(defaultValue = "0") Integer page,
+                                                                 @RequestParam(defaultValue = "20") Integer size){
+        return ResponseEntity.ok(playerService.getAllPlayers(page, size));
     }
 }

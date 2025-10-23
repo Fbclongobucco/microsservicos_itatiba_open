@@ -7,6 +7,8 @@ import com.buccodev.app.repository.PlayerRepository;
 import com.buccodev.app.utils.PlayerSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.context.WebServerApplicationContext;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -69,6 +71,7 @@ public class PlayerService {
         existingPlayer.setBirthDate(playerDto.birthDate());
         existingPlayer.setHeight(playerDto.height());
         existingPlayer.setWeight(playerDto.weight());
+        existingPlayer.setUrlPhoto(playerDto.urlPhoto());
 
         var updatedPlayer = playerRepository.save(existingPlayer);
         return PlayerResponseDto.fromEntity(updatedPlayer);
@@ -76,6 +79,16 @@ public class PlayerService {
     public List<PlayerResponseDto> getPlayerByName(String name){
         var prayer = playerRepository.findAll(PlayerSpecifications.hasNome(name));
         return prayer.stream().map(PlayerResponseDto::fromEntity).toList();
+    }
+
+    public List<PlayerResponseDto> getAllPlayers(Integer page, Integer size){
+
+        page = page < 0 ? 0 : page;
+        size = size <= 0 ? 20 : size;
+
+
+        var players = playerRepository.findAllByOrderByRankingAsc(PageRequest.of(page, size));
+        return players.stream().map(PlayerResponseDto::fromEntity).toList();
     }
 
 }

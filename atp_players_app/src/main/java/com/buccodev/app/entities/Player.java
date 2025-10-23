@@ -32,13 +32,15 @@ public class Player {
     private Integer height;
     @Column(nullable = false)
     private Double weight;
+    @Column(columnDefinition = "TEXT")
+    private String urlPhoto;
 
 
     public Player(){
     }
 
     public Player(UUID id, String name, Integer ranking, String country, String forehand, String backhand,
-            LocalDate birthDate, Integer height, Double weight) {
+            LocalDate birthDate, Integer height, Double weight, String urlPhoto) {
         this.id = id;
         this.name = name;
         this.ranking = ranking;
@@ -48,6 +50,7 @@ public class Player {
         this.birthDate = birthDate;
         this.height = height;
         this.weight = weight;
+        this.urlPhoto = urlPhoto;
     }
 
     public UUID getId() {
@@ -122,6 +125,13 @@ public class Player {
         this.weight = weight;
     }
 
+    public String getUrlPhoto() {
+        return urlPhoto;
+    }
+
+    public void setUrlPhoto(String urlPhoto) {
+        this.urlPhoto = urlPhoto;
+    }
 
     @Override
     public boolean equals(Object o) {
